@@ -31,7 +31,7 @@ router.get("/getById", (req, res) => {
         index = jsonData.findIndex(x => x.id == q.query.id);
         if (index >= 0) {
             res.end(JSON.stringify(jsonData[index]));
-        }else{
+        } else {
             res.end("this id does not exist");
         }
 
@@ -50,7 +50,12 @@ router.post("/addProduct", (req, res) => {
         try {
             const data = fs.readFileSync("products.json", "utf-8");
             const jsonData = JSON.parse(data);
-            newProduct.id = jsonData[jsonData.length - 1].id + 1;
+            if (jsonData.length === 0) {
+                newProduct.id = 0;
+            } else {
+                newProduct.id = jsonData[jsonData.length - 1].id + 1;
+            }
+            newProduct.image = newProduct.id + ".png";
             jsonData.push(newProduct);
             fs.writeFileSync("products.json", JSON.stringify(jsonData));
         } catch (error) {
