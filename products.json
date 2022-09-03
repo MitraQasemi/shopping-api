@@ -1,1 +1,1 @@
-[{"name":"mi","id":0,"price":50000,"image":"0.png","title":""},{"name":"mi","id":1,"price":50000,"image":"1.png","title":""},{"name":"mi","id":2,"price":50000,"image":"2.png","title":""},{"name":"mi","id":3,"price":50000,"image":"3.png","title":""}]
+[{"name":"chips","id":0,"price":50000,"image":["http://localhost:3000/image?filename=chili-chips-.png","http://localhost:3000/image?filename=chili-chips-.png","http://localhost:3000/image?filename=chili-chips-.png"],"category":"","quantity":"","description":""}]

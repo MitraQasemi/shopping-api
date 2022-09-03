@@ -55,7 +55,6 @@ router.post("/addProduct", (req, res) => {
             } else {
                 newProduct.id = jsonData[jsonData.length - 1].id + 1;
             }
-            newProduct.image = newProduct.id + ".png";
             jsonData.push(newProduct);
             fs.writeFileSync("products.json", JSON.stringify(jsonData));
         } catch (error) {
@@ -110,11 +109,12 @@ router.put("/updateById", (req, res) => {
         }
     });
 })
-router.get('/sendImage', (req, res) => {
+router.get('/image', (req, res) => {
     var q = url.parse(req.url, true);
+    res.writeHead(200, { "Content-Type": "image/ief" });
     try {
-        let img = fs.readFileSync(`./images/${q.query.id}.png`);
-        res.end(img, 'binary');
+        let img = fs.readFileSync(`./images/${q.query.filename}`);
+        res.end(img);
     } catch (error) {
         console.log(error);
     }
@@ -131,7 +131,7 @@ router.post("/setImage", (req, res) => {
                 uploadDir: 'images',
                 keepExtensions: true,
                 filename: (name, ext) => {
-                    return q.query.id + ".png";
+                    return name + ext;
                 }
             });
             form.parse(req, (err, fields, files) => {
@@ -139,30 +139,22 @@ router.post("/setImage", (req, res) => {
                     console.log(err);
                     return;
                 }
-                res.end("file uploaded");
+                if (typeof (jsonData[index].image) === "string") {
+                    let array = [];
+                    array.push(`http://localhost:3000/image?filename=${files.file.originalFilename}`);
+                    jsonData[index].image = array;
+                } else {
+                    jsonData[index].image.push(`http://localhost:3000/image?filename=${files.file.originalFilename}`);
+                }
+                fs.writeFileSync("products.json", JSON.stringify(jsonData));
             })
-            jsonData[index].image = q.query.id + ".png";
-            fs.writeFileSync("products.json", JSON.stringify(jsonData));
         } else {
             res.end("this id does not exist");
         }
     } catch (error) {
         console.log(error);
     }
-    // let data = "";
-    // req.on('data', function (chunk) {
-    //     data += chunk;
-    // });
-    // req.on('end', function () {
-    //     let buff = new Buffer.from(data);
-    //     let base64data = buff.toString('base64');
-    //     let buff1 = Buffer.from(base64data, 'base64');
-    //     try {
-    //         fs.writeFileSync('./images/test.png', buff1);
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // });
+    res.end("done")
 })
 http.createServer(router.handle).listen(3000);
 console.log(`The server is listening on port number:
