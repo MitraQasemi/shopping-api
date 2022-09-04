@@ -139,13 +139,7 @@ router.post("/setImage", (req, res) => {
                     console.log(err);
                     return;
                 }
-                if (typeof (jsonData[index].image) === "string") {
-                    let array = [];
-                    array.push(`http://localhost:3000/image?filename=${files.file.originalFilename}`);
-                    jsonData[index].image = array;
-                } else {
-                    jsonData[index].image.push(`http://localhost:3000/image?filename=${files.file.originalFilename}`);
-                }
+                jsonData[index].image.push(`http://localhost:3000/image?filename=${files.file.originalFilename}`);
                 fs.writeFileSync("products.json", JSON.stringify(jsonData));
             })
         } else {
